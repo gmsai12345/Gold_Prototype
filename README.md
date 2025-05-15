@@ -179,7 +179,7 @@ server/
 ## 🔒 Security Implementation
 
 ### Authentication Security
-- OAuth2.0 protocol implementation
+- OAuth2.0 protocol implementation (Firebase)
 - Secure token management
 - Rate limiting on auth endpoints
 
@@ -278,12 +278,9 @@ module.exports = {
 
 ### Build Process
 ```bash
-# Frontend Build
-npm run build
-
-# Backend Build
-cd server
-npm run build
+# Frontend and Backend Run Command
+npm i
+npm run dev:all
 ```
 
 ### Production Configuration
@@ -292,27 +289,9 @@ npm run build
 - Database optimization
 - Caching implementation
 
-## 🤝 Contributing Guidelines
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
 
 ### Code Style
 - ESLint configuration
 - Prettier formatting
 - TypeScript strict mode
 - Component documentation
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🆘 Support
-
-For technical support or queries:
-- Create an issue in the repository
-- Contact the development team
-- Check documentation updates
