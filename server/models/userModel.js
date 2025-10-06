@@ -1,113 +1,38 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true
+const db = require('./db');
+
+const User = {
+  async create({ username, email, password, role = 'user', status = 'pending' }) {
+    const [result] = await db.query(
+      'INSERT INTO users (username, email, password, role, status) VALUES (?, ?, ?, ?, ?)',
+      [username, email, password, role, status]
+    );
+    return result.insertId;
   },
-  firebaseUid: {
-    type: String,
-    required: true,
-    unique: true
+
+  async findByEmail(email) {
+    const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+    return rows[0];
   },
-  isAdmin: {
-    type: Boolean,
-    default: false
+
+  async findById(id) {
+    const [rows] = await db.query('SELECT * FROM users WHERE id = ?', [id]);
+    return rows[0];
   },
-  form: {
-    type: Number,
-    default: 0, // 0: not filled, 1: filled, -1: rejected
-    enum: [-1, 0, 1]
+
+  async updateStatus(id, status) {
+    await db.query('UPDATE users SET status = ? WHERE id = ?', [status, id]);
   },
-  formData: {
-    fullName: String,
-    dateOfBirth: Date,
-    gender: {
-      type: String,
-      enum: ['Male', 'Female', 'Other']
-    },
-    fatherSpouseName: String,
-    maritalStatus: {
-      type: String,
-      enum: ['Single', 'Married', 'Divorced', 'Widowed']
-    },
-    nationality: String,
-    currentAddress: {
-      street: String,
-      city: String,
-      state: String,
-      pincode: String,
-      country: String
-    },
-    permanentAddress: {
-      sameAsCurrent: {
-        type: Boolean,
-        default: false
-      },
-      street: String,
-      city: String,
-      state: String,
-      pincode: String,
-      country: String
-    },
-    mobileNumber: String,
-    alternateMobileNumber: String,
-    preferredCommunication: {
-      type: String,
-      enum: ['SMS', 'Email', 'Both']
-    },
-    panCardNumber: String,
-    aadhaarNumber: String,
-    additionalIdType: {
-      type: String,
-      enum: ['Voter ID', 'Driving License', 'Passport']
-    },
-    additionalIdNumber: String,
-    employmentType: {
-      type: String,
-      enum: ['Salaried', 'Self-employed', 'Business', 'Professional', 'Retired', 'Homemaker']
-    },
-    organizationName: String,
-    designation: String,
-    workAddress: String,
-    workContactNumber: String,
-    monthlyIncomeRange: String,
-    annualIncome: Number,
-    sector: String,
-    nominee: {
-      name: String,
-      relationship: String,
-      dateOfBirth: Date,
-      address: String,
-      contactNumber: String
-    }
-  },
-  rejectionReason: String,
-  goldHoldings: {
-    totalGold: {
-      type: Number,
-      default: 0
-    },
-    goldInSafe: {
-      type: Number,
-      default: 0
-    },
-    goldMortgaged: {
-      type: Number,
-      default: 0
-    }
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
+
+  async getAll() {
+    const [rows] = await db.query('SELECT * FROM users');
+    return rows;
   }
-});
+};
+
+module.exports = User;
 
 // Update the timestamp before saving
 userSchema.pre('save', function(next) {

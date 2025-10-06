@@ -60,5 +60,32 @@ loanSchema.pre('save', function(next) {
 });
 
 const Loan = mongoose.model('Loan', loanSchema);
+const db = require('./db');
+
+const Loan = {
+  async create({ userId, goldAmount, loanAmount, interestRate = 11.0, tenure, purpose }) {
+    const [result] = await db.query(
+      'INSERT INTO loans (userId, goldAmount, loanAmount, interestRate, tenure, purpose) VALUES (?, ?, ?, ?, ?, ?)',
+      [userId, goldAmount, loanAmount, interestRate, tenure, purpose]
+    );
+    return result.insertId;
+  },
+
+  async findByUserId(userId) {
+    const [rows] = await db.query('SELECT * FROM loans WHERE userId = ?', [userId]);
+    return rows;
+  },
+
+  async updateStatus(id, status) {
+    await db.query('UPDATE loans SET status = ? WHERE id = ?', [status, id]);
+  },
+
+  async getAll() {
+    const [rows] = await db.query('SELECT * FROM loans');
+    return rows;
+  }
+};
+
+module.exports = Loan;
 
 export default Loan;
